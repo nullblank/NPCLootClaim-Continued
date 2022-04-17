@@ -16,4 +16,5 @@ Version Log:
 1.0.4 - Vintar - Hostile squads no longer message the actor / stop further looting, zombied can't claim, reputation/goodwill loss for stealing loot, unspaghettified code
 1.0.5 - Vintar - Different method to force-close
 1.0.6 - Nullblank - Patched trade exploit / Removed unnecessary callbacks / Removed unnecessary functions
+1.0.6.1 - Nullblank - Hotfix for overlooked issues + fix for MarqØ's bug report.
 ```
