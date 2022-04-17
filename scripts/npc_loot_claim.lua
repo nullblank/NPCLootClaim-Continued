@@ -142,6 +142,11 @@ local function actor_loot_attempt(hud_name)
 		DestroyAll_UI()
 		actor_exploit = false
 	end
+	-- only force-close player inventory UI if glitch fires
+	if actor_exploit and actor_menu.get_last_mode() == 1 then
+		DestroyAll_UI()
+		actor_exploit = false
+	end
 	-- only force-close if actor is being warned or attacked
 	if actor_looting_claimed and (actor_menu.get_last_mode() == 4) then
 		hide_hud_inventory()
