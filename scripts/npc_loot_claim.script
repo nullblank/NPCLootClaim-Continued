@@ -1,4 +1,4 @@
---===================================== Variables ====================================
+--===================================== Variables =====================================
 
 local loot_claims = {}		-- table of victim npcs who are claimed
 local actor_looting_claimed = false
