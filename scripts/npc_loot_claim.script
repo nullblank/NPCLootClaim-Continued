@@ -1,6 +1,7 @@
---===================================== Variables =====================================
+--===================================== Variables ====================================
 
-local loot_claims = {}		-- table of victim npcs who are claimed
+local loot_claims = {}					-- table of victim npcs who are claimed
+local clock = os.clock      			-- For future features
 local actor_looting_claimed = false
 local actor_exploit = false
 
@@ -124,32 +125,42 @@ local function actor_looting(npc)
 	end
 end
 
+--clock test
+
+local function sleep(n)
+	local t0 = clock()
+	while clock() - t0 <= n do end
+end
 
 --==================================== Callbacks =====================================
 
 -- function adds claims and force-closes loot window if corpse is claimed or exploit detected
 local function actor_loot_attempt(hud_name)
-	local npc = mob_trade.GetTalkingNpc()
-    local is_trader = npc and trade_manager.get_trade_profile(npc:id(), "cfg_ltx")
+	--reints raven's sorting script
+	if (hud_name == "UIInventory") then
+		if rax_icon_layers then
+			zzz_rax_sortingplus_mcm.actor_on_first_update()
+		end
+	end
 	-- if UI Inventory is corpse
 	if (actor_menu.get_last_mode() == 4) then
 		local id = ui_inventory.GUI.npc_id
 		local npc = db.storage[id] and db.storage[id].object or level.object_by_id(id)
 		actor_looting(npc) --Npc checking and corpse claiming
 	end
-	-- only force-close trade window if actor attempting exploit
-	if is_trader and actor_exploit and actor_menu.get_last_mode() == 2 then
-		DestroyAll_UI()
-		actor_exploit = false
-	end
 	-- only force-close player inventory UI if glitch fires
 	if actor_exploit and actor_menu.get_last_mode() == 1 then
 		DestroyAll_UI()
+		ui_inventory.start(actor_menu.get_last_mode())
+		if rax_icon_layers then
+			zzz_rax_sortingplus_mcm.actor_on_first_update()
+		end
 		actor_exploit = false
 	end
+
 	-- only force-close if actor is being warned or attacked
 	if actor_looting_claimed and (actor_menu.get_last_mode() == 4) then
-		hide_hud_inventory()
+		hide_hud_all()
 		actor_exploit = true
 	else
 		actor_looting_claimed = false
@@ -194,7 +205,23 @@ local function npc_on_death_callback( victim, killer )
 	end
 end
 
+local function inventory_catch_exception()
+	-- only force-close trade window if actor attempting exploit
+	-- Trader glitch is fully fixed now.
+	if actor_exploit then
+		local trade_id = actor_menu.get_last_mode()
+		local npc = mob_trade.GetTalkingNpc()
+		DestroyAll_UI()
+		ui_inventory.start(trade_id, npc)
+		if rax_icon_layers then
+			zzz_rax_sortingplus_mcm.actor_on_first_update()
+		end
+		actor_exploit = false
+	end
+end
+
 function on_game_start()
 	RegisterScriptCallback("npc_on_death_callback",npc_on_death_callback)
 	RegisterScriptCallback("GUI_on_show",actor_loot_attempt)
+	RegisterScriptCallback("ActorMenu_on_trade_started",inventory_catch_exception)
 end
