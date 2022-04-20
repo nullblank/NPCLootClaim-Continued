@@ -10,6 +10,7 @@ Actor's kills are never claimed by NPCs.
 ## Changelog
 ```
 Version Log:
+1.0.6.2 - Nullblank - Hotfix for reported crashes / fixed trader ui / player ui still needs work, but has workaround in place
 1.0.6.1 - Nullblank - Hotfix for overlooked issues + fix for MarqØ's bug report.
 1.0.6 - Nullblank - Patched trade exploit / Removed unnecessary callbacks / Removed unnecessary functions
 1.0.5 - Vintar - Different method to force-close
